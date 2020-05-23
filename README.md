@@ -1,28 +1,29 @@
 # bacula_backup   
-#### Описание   
-[Bacula](https://www.bacula.org/) — кроссплатформенное клиент-серверное программное обеспечение, позволяющее управлять резервным копированием, восстановлением, и проверкой данных по сети для компьютеров и операционных систем различных типов.    
-#### Компоненты
-* Director (DIR) — осуществляет централизованный контроль и администрирование всего комплекса задач. Планирование и управление заданиями на резервное копирование (Job). Обслуживание Каталога (Catalog) — центральной БД для хранения метаданных.    
-За настройку Bacula Director отвечает файл [/etc/bacula/bacula-dir.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-dir.conf)    
-* File Daemon (FD) — сервис, выполняющий непосредственное копирование, восстановление и проверку данных по запросу Director. File Daemon должен быть установлен на каждой клиентской машине. File Daemon обменивается информацией с Director и Storage Daemon. За настройку отвечает файл [/etc/bacula/bacula-fd.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-fd.conf).   
-* Storage Daemon (SD) — читает и пишет данные на физический носитель: диск, ленту, DVD, USB. За настройку отвечает файл [/etc/bacula/bacula-sd.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-sd.conf)   
-* Console — управляющая консоль оператора или администратора. Поддерживаются ACL для разных пользователей консоли. Типы консолей: TTY, wxWidgets (GUI) для Linux, Unix, Win32, GNOME (GUI), несколько веб-интерфейсов, Qt4. За настройку отвечает файл [/etc/bacula/bconsole.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bconsole.conf).    
-* Catalog database — база данных SQL : MySQL, PostgreSQL, или SQLite для хранения метаданных.   
-* Tray Monitor — апплет GNOME/KDE/Win32 GUI для показа активности Director, File daemons, Storage daemon в реальном времени.    
-Все указанные компоненты могут находиться как на одном компьютере, так и на нескольких, объединённых в сеть.    
-#### Задача
-Настроить политику бэкапа директории /etc с клиента:    
-1) Полный бэкап - раз в день    
-2) Инкрементальный - каждые 10 минут    
-3) Дифференциальный - каждые 30 минут   
+#### Description   
+[Bacula](https://www.bacula.org/) — cross-platform client-server software that allows you to manage backup, recovery, and data verification over the network for computers and operating systems of various types.    
+#### Components   
+* Director (DIR) — The Bacula Director service is the program that supervises all the backup, restore, verify and archive operations. The system administrator uses the Bacula Director to schedule backups and to recover files. For more details see the Director Services Daemon Design Document in the Bacula Developer's Guide. The Director runs as a daemon (or service) in the background.    
+The Bacula Director is responsible for setting up the file[/etc/bacula/bacula-dir.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-dir.conf)    
+* File Daemon (FD) - a service that performs direct copying, recovery and verification of data at the request of Director. File Daemon must be installed on each client machine. File Daemon communicates with Director and Storage Daemon. The file is responsible for the configuration [/etc/bacula/bacula-fd.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-fd.conf).   
+* Storage Daemon (SD) - reads and writes data to physical media: disk, tape, DVD, USB. The file is responsible for the configuration[/etc/bacula/bacula-sd.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-sd.conf)   
+* Console — The Bacula Console service is the program that allows the administrator or user to communicate with the Bacula Director Currently, the Bacula Console is available in three versions: text-based console interface, QT-based interface, and a wxWidgets graphical interface. The first and simplest is to run the Console program in a shell window (i.e. TTY interface). Most system administrators will find this completely adequate. The second version is a GNOME GUI interface that is far from complete, but quite functional as it has most the capabilities of the shell Console. The third version is a wxWidgets GUI with an interactive file restore. It also has most of the capabilities of the shell console, allows command completion with tabulation, and gives you instant help about the command you are typing. For more details see the Bacula Console Design DocumentTheConsoleChapterconsoleChapter. The file is responsible for the configuration [/etc/bacula/bconsole.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bconsole.conf).    
+* Catalog database — SQL database: MySQL, PostgreSQL, or SQLite for storing metadata.   
+* Tray Monitor — A Bacula Monitor service is the program that allows the administrator or user to watch current status of Bacula Directors, Bacula File Daemons and Bacula Storage Daemons. Currently, only a GTK+ version is available, which works with GNOME, KDE, or any window manager that supports the FreeDesktop.org system tray standard.
+To perform a successful save or restore, the following four daemons must be configured and running: the Director daemon, the File daemon, the Storage daemon, and the Catalog service (MySQL, or PostgreSQL).    
+All of these components can be located on one computer or on several networked ones.    
+#### Task
+Configure a backup policy for the / etc directory from the client:    
+1) Full backup - once a day   
+2) Incremental - every 10 minutes   
+3) Differential - every 30 minutes      
 
-#### Реализация   
+#### Solution   
 fork git https://github.com/haf/vagrant-bacula    
-отредактированы настройки в файле [/etc/bacula/bacula-dir.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-dir.conf)   
-`vagrant up` поднимает сервер и 2 клиента. Все серверные компоненты настроены на одной машине server.   
-#### Проверка   
-`bconsole` - команды запускающая управляющаю консоль оператора или администратора.    
-Подробнее о консоли [на офсайте](https://www.bacula.org/5.0.x-manuals/en/console/console/Bacula_Console.html).   
+edited settings in the file [/etc/bacula/bacula-dir.conf](https://github.com/Hanafeevrus/bacula_backup/blob/master/bacula-dir.conf)   
+`vagrant up` raises the server and 2 clients. All server components are configured on the same server machine.   
+#### Check   
+`bconsole` - commands that launch the management console of the operator or administrator.    
+More information about the console [on the offsite](https://www.bacula.org/5.0.x-manuals/en/console/console/Bacula_Console.html).   
 ![list jobs](https://github.com/Hanafeevrus/bacula_backup/blob/master/list_jobs.png)   
 ![list files](https://github.com/Hanafeevrus/bacula_backup/blob/master/list_files.png)    
 ![status schedule](https://github.com/Hanafeevrus/bacula_backup/blob/master/status.png)    
